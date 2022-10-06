@@ -8,8 +8,11 @@
 #include <log4cpp/OstreamAppender.hh>
 #include <log4cpp/PatternLayout.hh>
 
-#include <execinfo.h>
 #include <memory>
+
+#ifdef USE_DEBUG
+#include <execinfo.h>
+#endif
 
 #include "main.hpp"
 
@@ -24,10 +27,14 @@ void sigsegv_handler(int sig) {
     constexpr int STACK_DEPTH = 10;
     void *array[STACK_DEPTH];
 
+    #ifdef USE_DEBUG
     size_t size = backtrace(array, STACK_DEPTH);
+    #endif
 
     fprintf(stderr, "ERROR: signal %d:\n", sig);
+    #ifdef USE_DEBUG
     backtrace_symbols_fd(array, size, STDERR_FILENO);
+    #endif
     exit(1);
 }
 

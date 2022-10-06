@@ -23,6 +23,10 @@ include_directories(../pjproject/install/include)
 link_directories(modules/mumlib/build)
 link_directories(../pjproject/install/lib)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
+
 set(SOURCE_FILES
         PjsuaCommunicator.cpp
         PjsuaCommunicator.hpp
@@ -41,5 +45,9 @@ add_executable(mumsi ${SOURCE_FILES} main.cpp)
 target_link_libraries(mumsi pjsua2 pjsua pjmedia pj)
 target_link_libraries(mumsi ${LOG4CPP_LIBRARIES})
 target_link_libraries(mumsi ${Boost_LIBRARIES})
-target_link_libraries(mumsi mumlib speexdsp crypto ssl protobuf opus execinfo)
+target_link_libraries(mumsi mumlib speexdsp crypto ssl protobuf opus)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_link_libraries(mumsi execinfo)
+        add_definitions(-DUSE_DEBUG)
+endif()

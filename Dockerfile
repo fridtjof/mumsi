@@ -9,8 +9,6 @@ RUN apk update \
     opus-dev \
     speexdsp-dev \
     pjproject-dev \
-    # musl doesn't ship execinfo.h
-    libexecinfo-dev \
     git \
     && apk --no-cache add log4cpp-dev --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
@@ -20,7 +18,7 @@ WORKDIR mumsi
 
 # Build mumlib & mumsi
 RUN mkdir build && cd build \
-    && cmake .. \
+    && cmake -DCMAKE_BUILD_TYPE=Release .. \
     && make -j
 
 FROM alpine:3.16 AS runner
@@ -32,7 +30,6 @@ RUN apk update \
     opus \
     speexdsp \
     pjproject \
-    libexecinfo \
     && apk --no-cache add log4cpp --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
 RUN mkdir app
