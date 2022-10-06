@@ -1,11 +1,10 @@
-FROM alpine:edge AS builder
+FROM alpine:3.16 AS builder
 
 RUN apk update \
     && apk --no-cache add build-base \
     boost-dev \
     cmake \
     pkgconfig \
-    libressl-dev \
     protobuf-dev \
     opus-dev \
     speexdsp-dev \
@@ -24,12 +23,11 @@ RUN mkdir build && cd build \
     && cmake .. \
     && make -j
 
-FROM alpine:edge AS runner
+FROM alpine:3.16 AS runner
 
 RUN apk update \
     && apk --no-cache add \
     boost \
-    libressl \
     protobuf \
     opus \
     speexdsp \
