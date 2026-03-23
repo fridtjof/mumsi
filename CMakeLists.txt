@@ -9,7 +9,7 @@ INCLUDE(FindPkgConfig)
 find_package(Boost COMPONENTS system regex REQUIRED)
 find_package(PkgConfig REQUIRED)
 
-#pkg_check_modules(PJSIP "libpjproject>=2.6")
+pkg_check_modules(PJSIP "libpjproject>=2.6")
 pkg_check_modules(LOG4CPP "log4cpp")
 
 add_definitions(${PJSIP_CFLAGS})
@@ -18,10 +18,8 @@ add_definitions(${LOG4CPP_CFLAGS})
 include_directories(${PJSIP_INCLUDE_DIRS})
 include_directories(${LOG4CPP_INCLUDE_DIRS})
 include_directories(modules/mumlib/include)
-include_directories(../pjproject/install/include)
 
 link_directories(modules/mumlib/build)
-link_directories(../pjproject/install/lib)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
