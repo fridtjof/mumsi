@@ -1,4 +1,4 @@
-FROM alpine:3.16 AS builder
+FROM alpine:3.23 AS builder
 
 RUN apk update \
     && apk --no-cache add build-base \
@@ -21,7 +21,7 @@ RUN mkdir build && cd build \
     && cmake -DCMAKE_BUILD_TYPE=Release .. \
     && make -j
 
-FROM alpine:3.16 AS runner
+FROM alpine:3.23 AS runner
 
 RUN apk update \
     && apk --no-cache add \
