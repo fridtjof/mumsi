@@ -1,3 +1,3 @@
 [submodule "modules/mumlib"]
 	path = modules/mumlib
-	url = https://github.com/hiro2233/mumlib.git
+	url = https://github.com/fridtjof/mumlib.git
