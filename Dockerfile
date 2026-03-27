@@ -12,9 +12,9 @@ RUN apk update \
     git \
     && apk --no-cache add log4cpp-dev --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
-COPY . mumsi/
+COPY . /mumsi/
 
-WORKDIR mumsi
+WORKDIR /mumsi
 
 # Build mumlib & mumsi
 RUN mkdir build && cd build \
