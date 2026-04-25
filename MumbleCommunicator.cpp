@@ -63,7 +63,7 @@ namespace mumble {
     };
 }
 
-mumble::MumbleCommunicator::MumbleCommunicator(boost::asio::io_service &ioService)
+mumble::MumbleCommunicator::MumbleCommunicator(boost::asio::io_context &ioService)
         : ioService(ioService),
           logger(log4cpp::Category::getInstance("MumbleCommunicator")) {
 }

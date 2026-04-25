@@ -5,8 +5,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
 add_subdirectory(modules/mumlib)
 
+find_package(Boost COMPONENTS regex REQUIRED)
 INCLUDE(FindPkgConfig)
-find_package(Boost COMPONENTS system regex REQUIRED)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(PJSIP "libpjproject>=2.6")

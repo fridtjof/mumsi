@@ -18,7 +18,7 @@
 
 namespace {
 
-std::weak_ptr<boost::asio::io_service> g_ioService;
+std::weak_ptr<boost::asio::io_context> g_ioService;
 
 /*
  * Code from http://stackoverflow.com/a/77336/5419223
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
     sip::IncomingConnectionValidator connectionValidator(conf.getString("sip.validUriExpression"));
 
-    auto ioService = std::make_shared<boost::asio::io_service>();
+    auto ioService = std::make_shared<boost::asio::io_context>();
     g_ioService = ioService;
 
     try {

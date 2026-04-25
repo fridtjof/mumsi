@@ -50,7 +50,7 @@ namespace mumble {
     class MumbleCommunicator : boost::noncopyable {
     public:
         MumbleCommunicator(
-                boost::asio::io_service &ioService);
+                boost::asio::io_context &ioService);
 
         void connect(MumbleCommunicatorConfig &config);
         void onConnect(const std::string& address);
@@ -92,7 +92,7 @@ namespace mumble {
         int callId;
 
     private:
-        boost::asio::io_service &ioService;
+        boost::asio::io_context &ioService;
 
         log4cpp::Category &logger;
 
