@@ -10,7 +10,7 @@ namespace mumble {
         MumbleCommunicator *communicator;
 
         // called by Mumlib when receiving audio from mumble server 
-        virtual void audio(
+        void audio(
                 int target,
                 int sessionId,
                 int sequenceNumber,
@@ -19,7 +19,7 @@ namespace mumble {
             communicator->onIncomingPcmSamples(communicator->callId, sessionId, sequenceNumber, pcm_data, pcm_data_size);
         }
 
-        virtual void channelState(
+        void channelState(
                 std::string name,
                 int32_t channel_id,
                 int32_t parent,
@@ -32,7 +32,7 @@ namespace mumble {
             communicator->onIncomingChannelState(name, channel_id);
         }
 
-        virtual void serverSync(
+        void serverSync(
                 std::string welcome_text,
                 int32_t session,
                 int32_t max_bandwidth,
@@ -41,7 +41,7 @@ namespace mumble {
         };
 
         /*
-        virtual void onUserState(
+        void onUserState(
                 int32_t session,
                 int32_t actor,
                 std::string name,
@@ -84,7 +84,7 @@ void mumble::MumbleCommunicator::connect(MumbleCommunicatorConfig &config) {
     callback->mum = mum;
 
     // IMPORTANT: comment these out when experimenting with onConnect
-    if ( ! MUM_DELAYED_CONNECT ) {
+    if constexpr ( ! MUM_DELAYED_CONNECT ) {
         mum->connect(config.host, config.port, config.user, config.password);
         if ( mumbleConf.autodeaf ) {
             mum->sendUserState(mumlib::UserState::SELF_DEAF, true);
