@@ -538,6 +538,10 @@ void sip::PjsuaCommunicator::connect(
 }
 
 sip::PjsuaCommunicator::~PjsuaCommunicator() {
+    for (auto& call: calls) {
+        call.media.reset(); // these need to be cleaned up before libDestroy, otherwise this happens automatically after
+        call.mixer.reset();
+    }
     endpoint.libDestroy();
 }
 
