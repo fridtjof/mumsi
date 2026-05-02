@@ -15,12 +15,11 @@ namespace sip {
 
     class _LogWriter : public pj::LogWriter {
     public:
-        _LogWriter(Category &logger)
+        explicit _LogWriter(Category &logger)
                 : logger(logger) { }
 
-        virtual void write(const pj::LogEntry &entry) override {
-
-            auto message = entry.msg.substr(0, entry.msg.size() - 1); // remove newline
+        void write(const pj::LogEntry &entry) override {
+            const auto message = entry.msg.substr(0, entry.msg.size() - 1); // remove newline
 
             logger << prioritiesMap.at(entry.level) << message;
         }
@@ -488,7 +487,6 @@ sip::PjsuaCommunicator::PjsuaCommunicator(IncomingConnectionValidator &validator
           pjsuaLogger(log4cpp::Category::getInstance("Pjsua")),
           uriValidator(validator) {
 
-    logWriter.reset(new sip::_LogWriter(pjsuaLogger));
     max_calls = maxCalls;
 
 
@@ -498,7 +496,7 @@ sip::PjsuaCommunicator::PjsuaCommunicator(IncomingConnectionValidator &validator
     endpointConfig.uaConfig.userAgent = "Mumsi Mumble-SIP gateway";
     endpointConfig.uaConfig.maxCalls = maxCalls;
 
-    endpointConfig.logConfig.writer = logWriter.get();
+    endpointConfig.logConfig.writer = new _LogWriter(pjsuaLogger);
     endpointConfig.logConfig.level = 5;
 
     endpointConfig.medConfig.noVad = true;

@@ -134,7 +134,6 @@ namespace sip {
         log4cpp::Category &logger;
         log4cpp::Category &pjsuaLogger;
 
-        std::unique_ptr<_LogWriter> logWriter;
         std::unique_ptr<_Account> account;
 
         pj::Endpoint endpoint;
