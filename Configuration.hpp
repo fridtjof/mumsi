@@ -32,6 +32,8 @@ namespace config {
 
         std::string getString(const std::string &property);
 
+        std::string getString(const std::string &property, const std::string &defaultValue);
+
         std::unordered_map<std::string, std::string> getChildren(const std::string &property);
 
     private:

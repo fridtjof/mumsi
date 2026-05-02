@@ -16,7 +16,7 @@ namespace config {
     TYPE get(boost::property_tree::ptree tree, const std::string &property) {
         try {
             return tree.get<TYPE>(property);
-        } catch (boost::property_tree::ptree_bad_path) {
+        } catch (boost::property_tree::ptree_bad_path&) {
             throw ConfigException((boost::format("Configuration option '%s' (type: %s) not found.")
                                    % property % typeid(TYPE).name()).str());
         }
@@ -49,6 +49,14 @@ bool config::Configuration::getBool(const std::string &property) {
 
 std::string config::Configuration::getString(const std::string &property) {
     return get<std::string>(impl->ptree, property);
+}
+
+std::string config::Configuration::getString(const std::string &property, const std::string& defaultValue) {
+    try {
+        return getString(property);
+    } catch (ConfigException&) {
+        return defaultValue;
+    }
 }
 
 // TODO: return set

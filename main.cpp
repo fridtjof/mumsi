@@ -121,56 +121,17 @@ int main(int argc, char *argv[]) {
         mumbleConf.autodeaf = false;
     }
 
-    try {
-        mumbleConf.comment = conf.getString("app.comment");
-    } catch (...) {
-        mumbleConf.comment = "";
-    }
+    mumbleConf.comment = conf.getString("app.comment", "");
 
-    try { pjsuaCommunicator.file_welcome = conf.getString("files.welcome");
-    } catch (...) {
-        pjsuaCommunicator.file_welcome = "welcome.wav";
-    }
-
-    try { pjsuaCommunicator.file_prompt_pin = conf.getString("files.prompt_pin");
-    } catch (...) {
-        pjsuaCommunicator.file_prompt_pin = "prompt-pin.wav";
-    }
-
-    try { pjsuaCommunicator.file_entering_channel = conf.getString("files.entering_channel");
-    } catch (...) {
-        pjsuaCommunicator.file_entering_channel = "entering-channel.wav";
-    }
-
-    try { pjsuaCommunicator.file_announce_new_caller = conf.getString("files.announce_new_caller");
-    } catch (...) {
-        pjsuaCommunicator.file_announce_new_caller = "announce-new-caller.wav";
-    }
-
-    try { pjsuaCommunicator.file_invalid_pin = conf.getString("files.invalid_pin");
-    } catch (...) {
-        pjsuaCommunicator.file_invalid_pin = "invalid-pin.wav";
-    }
-
-    try { pjsuaCommunicator.file_goodbye = conf.getString("files.goodbye");
-    } catch (...) {
-        pjsuaCommunicator.file_goodbye = "goodbye.wav";
-    }
-
-    try { pjsuaCommunicator.file_mute_on = conf.getString("files.mute_on");
-    } catch (...) {
-        pjsuaCommunicator.file_mute_on = "mute-on.wav";
-    }
-
-    try { pjsuaCommunicator.file_mute_off = conf.getString("files.mute_off");
-    } catch (...) {
-        pjsuaCommunicator.file_mute_off = "mute-off.wav";
-    }
-
-    try { pjsuaCommunicator.file_menu = conf.getString("files.menu");
-    } catch (...) {
-        pjsuaCommunicator.file_menu = "menu.wav";
-    }
+    pjsuaCommunicator.file_welcome = conf.getString("files.welcome", "welcome.wav");
+    pjsuaCommunicator.file_prompt_pin = conf.getString("files.prompt_pin", "prompt-pin.wav");
+    pjsuaCommunicator.file_entering_channel = conf.getString("files.entering_channel", "entering-channel.wav");
+    pjsuaCommunicator.file_announce_new_caller = conf.getString("files.announce_new_caller", "announce-new-caller.wav");
+    pjsuaCommunicator.file_invalid_pin = conf.getString("files.invalid_pin", "invalid-pin.wav");
+    pjsuaCommunicator.file_goodbye = conf.getString("files.goodbye", "goodbye.wav");
+    pjsuaCommunicator.file_mute_on = conf.getString("files.mute_on", "mute-on.wav");
+    pjsuaCommunicator.file_mute_off = conf.getString("files.mute_off", "mute-off.wav");
+    pjsuaCommunicator.file_menu = conf.getString("files.menu", "menu.wav");
 
     std::string defaultChan = conf.getString("mumble.channelNameExpression"); 
 
