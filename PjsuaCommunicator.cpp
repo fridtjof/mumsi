@@ -45,7 +45,7 @@ namespace sip {
             registerMediaPort(&mediaPort);
         }
 
-        ~_MumlibAudioMedia() {
+        ~_MumlibAudioMedia() override {
             unregisterMediaPort();
         }
 
@@ -104,11 +104,11 @@ namespace sip {
                   communicator(comm),
                   account(acc) { }
 
-        virtual void onCallState(pj::OnCallStateParam &prm) override;
+        void onCallState(pj::OnCallStateParam &prm) override;
 
-        virtual void onCallMediaState(pj::OnCallMediaStateParam &prm) override;
+        void onCallMediaState(pj::OnCallMediaStateParam &prm) override;
 
-        virtual void onDtmfDigit(pj::OnDtmfDigitParam &prm) override;
+        void onDtmfDigit(pj::OnDtmfDigitParam &prm) override;
         void onInstantMessage(pj::OnInstantMessageParam &prm) override;
 
         virtual void playAudioFile(std::string file);
@@ -124,9 +124,9 @@ namespace sip {
         _Account(sip::PjsuaCommunicator &comm, int max_calls)
                 : communicator(comm) { this->max_calls = max_calls; }
 
-        virtual void onRegState(pj::OnRegStateParam &prm) override;
+        void onRegState(pj::OnRegStateParam &prm) override;
 
-        virtual void onIncomingCall(pj::OnIncomingCallParam &iprm) override;
+        void onIncomingCall(pj::OnIncomingCallParam &iprm) override;
         void onInstantMessage(pj::OnInstantMessageParam &prm) override;
 
     private:
@@ -168,7 +168,7 @@ namespace sip {
              * if no pin is set, go ahead and turn off mute/deaf
              * otherwise, wait for pin to be entered
              */
-            if ( communicator.pins.size() == 0 ) {
+            if ( communicator.pins.empty() ) {
                 // No PIN set... enter DTMF root menu and turn off mute/deaf
                 communicator.dtmf_mode = DTMF_MODE_ROOT;
                 // turning off mute automatically turns off deaf
@@ -315,7 +315,7 @@ namespace sip {
                         /*
                          * When user presses '#', test PIN entry
                          */
-                        if ( communicator.pins.size() > 0 ) {
+                        if ( !communicator.pins.empty() ) {
                             if ( communicator.pins["pin"] == communicator.got_dtmf ) {
                                 communicator.logger.notice("Caller entered correct PIN");
                                 communicator.dtmf_mode = DTMF_MODE_STAR;
@@ -404,7 +404,7 @@ namespace sip {
                         communicator.dtmf_mode = DTMF_MODE_ROOT;
                         break;
                     case '9':
-                        if ( communicator.pins.size() > 0 ) {
+                        if ( !communicator.pins.empty() ) {
                             communicator.dtmf_mode = DTMF_MODE_UNAUTH;
                             communicator.calls[ci.id].sendUserState(mumlib::UserState::SELF_DEAF, true);
                             communicator.calls[ci.id].joinDefaultChannel();

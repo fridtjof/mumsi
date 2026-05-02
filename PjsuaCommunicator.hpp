@@ -50,7 +50,7 @@ namespace sip {
             mesg += errorMsgBuffer;
         }
 
-        virtual const char *what() const throw() override {
+        const char *what() const throw() override {
             return mesg.c_str();
         }
 
