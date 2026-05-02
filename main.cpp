@@ -70,10 +70,12 @@ int main(int argc, char *argv[]) {
     SetupSignalHandlers();
     int max_calls;
 
-    log4cpp::OstreamAppender appender("console", &std::cout);
-    log4cpp::PatternLayout layout;
-    layout.setConversionPattern("%d [%p] %c: %m%n");
-    appender.setLayout(&layout);
+    // ReSharper disable once CppDFAMemoryLeak deleted by logger
+    log4cpp::Appender* appender = new log4cpp::OstreamAppender("console", &std::cout);
+    // ReSharper disable once CppDFAMemoryLeak deleted by appender
+    auto layout = new log4cpp::PatternLayout;
+    layout->setConversionPattern("%d [%p] %c: %m%n");
+    appender->setLayout(layout);
     log4cpp::Category &logger = log4cpp::Category::getRoot();
     logger.setPriority(log4cpp::Priority::DEBUG);
     //logger.setPriority(log4cpp::Priority::NOTICE);
