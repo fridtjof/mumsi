@@ -1,25 +1,35 @@
-cmake_minimum_required(VERSION 3.10)
+# cmake_pkg_config was added in 3.31, and it's the only way I figured out how to properly link against pjproject
+# it's available from debian 13, ubuntu 25.04 and alpine 3.21
+cmake_minimum_required(VERSION 3.31)
 project(mumsi)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 add_subdirectory(modules/mumlib)
 
-find_package(Boost COMPONENTS regex REQUIRED)
-INCLUDE(FindPkgConfig)
+find_package(Boost CONFIG COMPONENTS regex REQUIRED)
+
 find_package(PkgConfig REQUIRED)
+cmake_pkg_config(IMPORT libpjproject >=2.16 REQUIRED)
+# needed for static linking workaround
+# TODO can we get this through the target instead?
+cmake_pkg_config(EXTRACT libpjproject >=2.16 REQUIRED)
+cmake_pkg_config(IMPORT log4cpp REQUIRED)
 
-pkg_check_modules(PJSIP "libpjproject>=2.6")
-pkg_check_modules(LOG4CPP "log4cpp")
-
-add_definitions(${PJSIP_CFLAGS})
-add_definitions(${LOG4CPP_CFLAGS})
-
-include_directories(${PJSIP_INCLUDE_DIRS})
-include_directories(${LOG4CPP_INCLUDE_DIRS})
+#include_directories(${PJSIP_INCLUDE_DIRS})
+#include_directories(${LOG4CPP_INCLUDE_DIRS})
 include_directories(modules/mumlib/include)
 
-link_directories(modules/mumlib/build)
+#link_directories(modules/mumlib/build)
+
+if (APPLE)
+    # needed to successfully link against openssl and a bunch of other pkgconfig libraries
+    link_directories(/opt/homebrew/lib)
+    #include_directories(/opt/homebrew/include)
+endif()
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
@@ -40,10 +50,14 @@ set(SOURCE_FILES
         AudioFramesMixer.cpp)
 
 add_executable(mumsi ${SOURCE_FILES} main.cpp)
-target_link_libraries(mumsi pjsua2 pjsua pjmedia pj)
-target_link_libraries(mumsi ${LOG4CPP_LIBRARIES})
+target_link_libraries(mumsi PkgConfig::libpjproject)
+# workaround because pj is only available as static libraries, but cmake is too stupid to deal with linking this properly
+# (or maybe i'm holding it wrong, who knows)
+target_link_libraries(mumsi ${CMAKE_PKG_CONFIG_LIBS_PRIVATE})
+#target_link_libraries(mumsi PkgConfig::LOG4CPP)
+target_link_libraries(mumsi PkgConfig::log4cpp)
 target_link_libraries(mumsi ${Boost_LIBRARIES})
-target_link_libraries(mumsi mumlib speexdsp crypto ssl protobuf opus)
+target_link_libraries(mumsi mumlib)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         find_package(Backtrace)
