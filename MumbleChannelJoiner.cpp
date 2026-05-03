@@ -11,7 +11,6 @@ logger(log4cpp::Category::getInstance("MumbleChannelJoiner")){
 std::vector<mumble::MumbleChannelJoiner::ChannelEntry> mumble::MumbleChannelJoiner::channels;
 
 void mumble::MumbleChannelJoiner::checkChannel(std::string channel_name, int channel_id) {
-    boost::smatch s;
     ChannelEntry ent;
     logger.debug("Channel %s available (%d)", channel_name.c_str(), channel_id);
 
@@ -20,7 +19,7 @@ void mumble::MumbleChannelJoiner::checkChannel(std::string channel_name, int cha
 
     channels.push_back(ent);
 
-    if(boost::regex_match(channel_name, s, channelNameRegex)) {
+    if(boost::smatch s; boost::regex_match(channel_name, s, channelNameRegex)) {
       this->channel_id = channel_id;
     }
 }
@@ -39,7 +38,7 @@ void mumble::MumbleChannelJoiner::findJoinChannel(mumble::MumbleCommunicator *mc
 
     int found = -1;
 
-    for(std::vector<ChannelEntry>::iterator it = channels.begin(); it != channels.end(); ++it) {
+    for(auto it = channels.begin(); it != channels.end(); ++it) {
         if(boost::regex_match(it->name, s, channelNameRegex)) {
             found = it->id;
         }

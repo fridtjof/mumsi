@@ -14,11 +14,11 @@ namespace mixer {
 
     class Exception : public std::runtime_error {
     public:
-        Exception(std::string title) : std::runtime_error(title) {
+        Exception(const std::string &title) : std::runtime_error(title) {
             mesg += title;
         }
 
-        Exception(std::string title, pj_status_t status) : std::runtime_error(title) {
+        Exception(const std::string &title, pj_status_t status) : std::runtime_error(title) {
             char errorMsgBuffer[500];
             pj_strerror(status, errorMsgBuffer, sizeof(errorMsgBuffer));
 
@@ -27,7 +27,7 @@ namespace mixer {
             mesg += errorMsgBuffer;
         }
 
-        virtual const char *what() const throw() override {
+        [[nodiscard]] const char *what() const noexcept override {
             return mesg.c_str();
         }
 

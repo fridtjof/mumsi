@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <functional>
+#include <memory>
 
 namespace mumble {
     class MumlibCallback : public mumlib::BasicCallback {
@@ -69,8 +70,7 @@ mumble::MumbleCommunicator::MumbleCommunicator(boost::asio::io_context &ioServic
 }
 
 void mumble::MumbleCommunicator::connect(MumbleCommunicatorConfig &config) {
-
-    callback.reset(new MumlibCallback());
+    callback = std::make_unique<MumlibCallback>();
 
     mumbleConf = config;
 
@@ -79,7 +79,7 @@ void mumble::MumbleCommunicator::connect(MumbleCommunicatorConfig &config) {
     mumConfig.cert_file = config.cert_file;
     mumConfig.privkey_file = config.privkey_file;
 
-    mum.reset(new mumlib::Mumlib(*callback, ioService, mumConfig));
+    mum = std::make_shared<mumlib::Mumlib>(*callback, ioService, mumConfig);
     callback->communicator = this;
     callback->mum = mum;
 
@@ -93,7 +93,7 @@ void mumble::MumbleCommunicator::connect(MumbleCommunicatorConfig &config) {
 }
 
 void mumble::MumbleCommunicator::onConnect(const std::string& address) {
-    if ( MUM_DELAYED_CONNECT ) {
+    if constexpr ( MUM_DELAYED_CONNECT ) {
         std::string user = mumbleConf.user;
         std::size_t p1 = address.find_first_of('"');
         std::size_t p2 = address.find_first_of('"', p1 + 1);
@@ -121,7 +121,7 @@ void mumble::MumbleCommunicator::onConnect(const std::string& address) {
 }
 
 void mumble::MumbleCommunicator::onDisconnect() {
-    if ( MUM_DELAYED_CONNECT ) {
+    if constexpr ( MUM_DELAYED_CONNECT ) {
         mum->disconnect();
     } else {
     }
