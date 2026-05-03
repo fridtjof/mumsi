@@ -39,10 +39,18 @@ namespace sip {
 
     class _MumlibAudioMedia : public pj::AudioMedia {
     public:
-        _MumlibAudioMedia(int call_id, sip::PjsuaCommunicator &comm, int frameTimeLength)
+        _MumlibAudioMedia(int call_id, sip::PjsuaCommunicator &comm, int frameTimeLength, pj_pool_factory &poolFactory)
                 : communicator(comm) {
             createMediaPort(call_id, frameTimeLength);
-            registerMediaPort(&mediaPort);
+
+            char name [128];
+            snprintf(name, sizeof(name), "media_pool%d", call_id);
+            const auto pool = pj_pool_create(&poolFactory, name, 512, 512, nullptr);
+            if (!pool) {
+                throw Exception("error when creating memory pool");
+            }
+
+            registerMediaPort2(&mediaPort, pool);
         }
 
         ~_MumlibAudioMedia() override {
@@ -508,8 +516,9 @@ sip::PjsuaCommunicator::PjsuaCommunicator(IncomingConnectionValidator &validator
     for(int i=0; i<maxCalls; ++i) {
         calls[i].index = i;
         pj_caching_pool_init(&(calls[i].cachingPool), &pj_pool_factory_default_policy, 0);
+        pj_caching_pool_init(&(calls[i].mediaCachingPool), &pj_pool_factory_default_policy, 0);
         calls[i].mixer.reset(new mixer::AudioFramesMixer(calls[i].cachingPool.factory));
-        calls[i].media.reset(new _MumlibAudioMedia(i, *this, frameTimeLength));
+        calls[i].media.reset(new _MumlibAudioMedia(i, *this, frameTimeLength, calls[i].mediaCachingPool.factory));
     }
 
     logger.info("Created Pjsua communicator with frame length %d ms.", frameTimeLength);

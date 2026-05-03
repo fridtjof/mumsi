@@ -71,6 +71,7 @@ namespace sip {
         std::unique_ptr<mixer::AudioFramesMixer> mixer;
         std::unique_ptr<sip::_MumlibAudioMedia> media;
         pj_caching_pool cachingPool;
+        pj_caching_pool mediaCachingPool;
         std::function<void(std::string)> onStateChange;
         std::function<void(int16_t *, int)> onIncomingPcmSamples;
         std::function<void(int)> onMuteDeafChange;
