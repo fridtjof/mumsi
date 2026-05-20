@@ -1,6 +1,5 @@
 #include "MumbleCommunicator.hpp"
 
-#include <cstring>
 #include <functional>
 #include <memory>
 

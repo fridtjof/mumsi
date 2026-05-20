@@ -20,9 +20,9 @@ namespace mumble {
         MumbleChannelJoiner(std::string channelNameRegex);
 
         void checkChannel(std::string channel_name, int channel_id);
-        void maybeJoinChannel(mumble::MumbleCommunicator *mc);
-        void findJoinChannel(mumble::MumbleCommunicator *mc);
-        void joinOtherChannel(mumble::MumbleCommunicator *mc, std::string channelNameRegex);
+        void maybeJoinChannel(MumbleCommunicator *mc);
+        void findJoinChannel(MumbleCommunicator *mc);
+        void joinOtherChannel(MumbleCommunicator *mc, std::string channelNameRegex);
 
     private:
         log4cpp::Category &logger;

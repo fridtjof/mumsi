@@ -3,14 +3,14 @@
 #include <boost/algorithm/string.hpp>
 using namespace std;
 
-mumble::MumbleChannelJoiner::MumbleChannelJoiner(std::string channelNameRegex) : channelNameRegex(boost::regex(channelNameRegex)),
+mumble::MumbleChannelJoiner::MumbleChannelJoiner(string channelNameRegex) : channelNameRegex(boost::regex(channelNameRegex)),
 logger(log4cpp::Category::getInstance("MumbleChannelJoiner")){
-    //std::vector<ChannelEntry> *channels = new std::vector<ChannelEntry>();
+    //vector<ChannelEntry> *channels = new vector<ChannelEntry>();
 }
 
-std::vector<mumble::MumbleChannelJoiner::ChannelEntry> mumble::MumbleChannelJoiner::channels;
+vector<mumble::MumbleChannelJoiner::ChannelEntry> mumble::MumbleChannelJoiner::channels;
 
-void mumble::MumbleChannelJoiner::checkChannel(std::string channel_name, int channel_id) {
+void mumble::MumbleChannelJoiner::checkChannel(string channel_name, int channel_id) {
     ChannelEntry ent;
     logger.debug("Channel %s available (%d)", channel_name.c_str(), channel_id);
 
@@ -24,7 +24,7 @@ void mumble::MumbleChannelJoiner::checkChannel(std::string channel_name, int cha
     }
 }
 
-void mumble::MumbleChannelJoiner::maybeJoinChannel(mumble::MumbleCommunicator *mc) {
+void mumble::MumbleChannelJoiner::maybeJoinChannel(MumbleCommunicator *mc) {
 	if(channel_id > -1) {
 		mc->joinChannel(channel_id);
 	}
@@ -33,14 +33,14 @@ void mumble::MumbleChannelJoiner::maybeJoinChannel(mumble::MumbleCommunicator *m
 /* This is a secondary channel-switching object that relys on updates to the
  * class variable 'channels' for the channel list from the server.
  */
-void mumble::MumbleChannelJoiner::findJoinChannel(mumble::MumbleCommunicator *mc) {
+void mumble::MumbleChannelJoiner::findJoinChannel(MumbleCommunicator *mc) {
     boost::smatch s;
 
     int found = -1;
 
-    for(auto it = channels.begin(); it != channels.end(); ++it) {
-        if(boost::regex_match(it->name, s, channelNameRegex)) {
-            found = it->id;
+    for(auto &[id, name] : channels) {
+        if(boost::regex_match(name, s, channelNameRegex)) {
+            found = id;
         }
     }
 
@@ -49,7 +49,7 @@ void mumble::MumbleChannelJoiner::findJoinChannel(mumble::MumbleCommunicator *mc
 	}
 }
 
-void mumble::MumbleChannelJoiner::joinOtherChannel(mumble::MumbleCommunicator *mc, std::string channelNameRegex) {
+void mumble::MumbleChannelJoiner::joinOtherChannel(MumbleCommunicator *mc, string channelNameRegex) {
     this->channelNameRegex = boost::regex(channelNameRegex);
     findJoinChannel(mc);
 }
