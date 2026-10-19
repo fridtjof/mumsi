@@ -18,19 +18,27 @@ WORKDIR /mumsi
 
 # Build mumlib & mumsi
 RUN mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release .. \
+    && cmake -DCMAKE_BUILD_TYPE=Debug .. \
     && make -j
 
 FROM alpine:3.23 AS runner
 
 RUN apk update \
     && apk --no-cache add \
+    build-base gdb \
+    boost-dev \
+    cmake \
+    pkgconfig \
+    protobuf-dev \
+    opus-dev \
+    speexdsp-dev \
+    pjproject-dev \
     boost \
     protobuf \
     opus \
     speexdsp \
     pjproject \
-    && apk --no-cache add log4cpp --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+    && apk --no-cache add log4cpp log4cpp-dev --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
 RUN mkdir app
 VOLUME /config
